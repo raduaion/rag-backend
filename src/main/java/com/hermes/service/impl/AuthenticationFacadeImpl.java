@@ -1,0 +1,56 @@
+/*
+ * Copyright 2025 Aion Sigma Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.hermes.service.impl;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import com.hermes.exceptions.ForbiddenException;
+import com.hermes.service.AuthenticationFacade;
+
+@Service
+public class AuthenticationFacadeImpl implements AuthenticationFacade {
+
+  @Value("${hermes.users.admin.id}")
+  private String adminId;
+
+  @Override
+  public Authentication getAuthentication() {
+    return SecurityContextHolder.getContext().getAuthentication();
+  }
+
+  /**
+   * Check if the current user is admin
+   * @return
+   */
+  @Override
+  public boolean isAdmin() {
+    final Authentication authentication = this.getAuthentication();
+    return (authentication != null && authentication.getName().equals(adminId));
+  }
+
+  /**
+   * Throws ForbiddenException if the current user is not Admin
+   */
+  @Override
+  public void checkAdmin() throws ForbiddenException {
+    if (!isAdmin()) {
+      throw new ForbiddenException("User not authorized");
+    }
+  }
+}

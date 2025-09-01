@@ -1,0 +1,53 @@
+flowchart TD
+    %% User Interactions
+    A[User] -->|Uploads Files| B[Frontend <Web Interface>]
+    A -->|Asks a Question| J[Frontend <Web Interface>]
+
+    %% File Upload & Processing
+    B -->|Sends File| C[Backend <Manages Requests>]
+    C -->|Stores File + Metadata| D[GCS <Google Cloud Storage>]
+    C -->|Triggers Processing| E[AI Processor <Manages Index & Queries>]
+    D -->|Notifies AI Processor| E
+
+    %% AI Processing & Indexing
+    E -->|Extracts Key Info & Converts to Vectors| F[FAISS Index <Stored in GCS>]
+    E -->|Stores FAISS DB in GCS| D
+    E -->|Updates File Metadata <status, keywords, etc.>| D
+
+    %% Search Workflow
+    J -->|Sends Question| C
+    C -->|Fetches Conversation History| K[Firestore <Stores Conversations>]
+    C -->|Sends Query to AI Processor| E
+    E -->|Rephrases Question| L[AI Model <LLM>]
+    E -->|Searches FAISS Index| F
+    F -->|Returns Relevant Chunks| E
+    E -->|Generates AI Answer| L
+    L -->|Returns Answer + References| C
+    C -->|Displays Answer in UI| J
+
+    %% File Deletion & FAISS Cleanup
+    A -->|Deletes File| B
+    B -->|Requests Deletion| C
+    C -->|Removes File from GCS| D
+    D -->|Triggers Cleanup Event| E
+    E -->|Deletes FAISS DB| D
+
+    %% Class Definitions (Improved Contrast for Readability)
+    classDef user fill:#FFFFFF,stroke:#000000,stroke-width:2px,color:#000;
+    classDef frontend fill:#BBDEFB,stroke:#0D47A1,stroke-width:2px,color:#000;
+    classDef backend fill:#A5D6A7,stroke:#1B5E20,stroke-width:2px,color:#000;
+    classDef storage fill:#FFCDD2,stroke:#B71C1C,stroke-width:2px,color:#000;
+    classDef processor fill:#E1BEE7,stroke:#4A148C,stroke-width:2px,color:#000;
+    classDef ai fill:#FFE082,stroke:#FF6F00,stroke-width:2px,color:#000;
+    classDef db fill:#D1C4E9,stroke:#311B92,stroke-width:2px,color:#000;
+
+    %% Assigning Classes
+    A:::user
+    B:::frontend
+    J:::frontend
+    C:::backend
+    K:::db
+    D:::storage
+    F:::storage
+    E:::processor
+    L:::ai

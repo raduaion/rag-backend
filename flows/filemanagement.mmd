@@ -1,0 +1,37 @@
+sequenceDiagram
+    autonumber
+    participant User
+    participant NodeJS_Frontend as NodeJS Frontend
+    participant Java_Backend as Java Backend
+    participant GCS as GCS (Files + Metadata)
+    participant Python_Processor as Python Processor
+
+    Note over User,NodeJS_Frontend: Upload a File
+    User->>NodeJS_Frontend: Select file to upload
+    NodeJS_Frontend->>Java_Backend: POST /upload (file data)
+    Java_Backend->>GCS: Store file + initial metadata (e.g. status=PENDING)
+    Java_Backend-->>NodeJS_Frontend: Return upload success
+
+    Note over GCS,Python_Processor: Processor Trigger (File Upload)
+    GCS-->>Python_Processor: "File uploaded" event
+    Python_Processor->>Python_Processor: Process file, build FAISS DB
+    Python_Processor->>GCS: Update file metadata (status=PROCESSED, keywords, etc.)
+    Python_Processor->>GCS: Store packed FAISS DB and its metadata
+
+    Note over User,NodeJS_Frontend: List Files
+    User->>NodeJS_Frontend: Request file list
+    NodeJS_Frontend->>Java_Backend: GET /files
+    Java_Backend->>GCS: Retrieve file objects + metadata
+    GCS-->>Java_Backend: Return list (statuses, keywords, etc.)
+    Java_Backend-->>NodeJS_Frontend: Return file info
+    NodeJS_Frontend-->>User: Display file list
+
+    Note over User,NodeJS_Frontend: Delete File
+    User->>NodeJS_Frontend: Delete file
+    NodeJS_Frontend->>Java_Backend: DELETE /files/{id}
+    Java_Backend->>GCS: Remove file + metadata
+    Java_Backend-->>NodeJS_Frontend: Return success
+
+    Note over GCS,Python_Processor: Processor Trigger (File Delete)
+    GCS-->>Python_Processor: "File deleted" event
+    Python_Processor->>GCS: Remove associated FAISS DB

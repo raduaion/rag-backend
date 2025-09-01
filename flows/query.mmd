@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant F as NodeJS Frontend
+    participant J as Java Backend
+    participant Firestore as Firestore (Conversation)
+    participant P as Python Processor
+    participant GCS as GCS (FAISS + Metadata)
+
+    Note over U,F: User enters a question in the UI
+    U->>F: 1. Ask question
+    F->>J: 2. POST /api/query?conversationId=xxx
+    J->>Firestore: 3. Get conversation history (if stored)
+    Firestore-->>J: 4. Return conversation data
+    J->>P: 5. POST /processor/query w/ question + history + index references
+
+    Note over P,GCS: <b>Python Processor</b>
+    P->>GCS: 6. Load FAISS DB + metadata (sentenceTransformer, chunkSize,...)
+    P->>P: 7. Rephrase question (LLM) 
+    P->>GCS: 8. Vector search in FAISS
+    GCS-->>P: 9. Return relevant chunks
+    P->>P: 10. Generate final answer using LLM
+    P-->>J: 11. Return answer + references
+
+    J->>Firestore: 12. Store Q&A snippet in conversation doc
+    J-->>F: 13. Return answer + references
+    F-->>U: 14. Display final answer + references

@@ -1,0 +1,24 @@
+services:
+  backend:
+    image: hermes-backend:latest
+    container_name: hermes-backend
+    # entrypoint: "/bin/sh"
+    # ports:
+    #   - "8080:8080"
+    # Attach this service to the custom network,
+    # and give it an alias "hermes-backend" so the frontend can resolve it.
+    networks:
+      hermes-net:
+        aliases:
+          - hermes-backend
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /opt/hermes/config/gcp-creds.json
+    volumes:
+      - <YOUR_PATH_TO_CONFIG>/config:/opt/hermes/config
+      - <YOUR_PATH_TO_LOGS>:/opt/hermes/logs
+      - <YOUR_PATH_TO_GOOGLE_CREDENTIALS_JSON>:/opt/hermes/config/gcp-creds.json:ro
+
+# Define the custom bridge network
+networks:
+  hermes-net:
+    driver: bridge

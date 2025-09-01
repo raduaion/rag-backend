@@ -1,0 +1,22 @@
+flowchart LR
+    A[User<br/><b>Browser</b>]:::user --> B[NodeJS Frontend<br/><b>UI</b>]:::frontend
+    B --> C[Java Backend<br/><b>Index APIs</b>]:::backend
+    C --> D[Firestore<br/><b>Index Docs</b>]:::db
+    C --> E[GCS<br/><b>Packed FAISS DB<br/><Metadata></b>]:::gcs
+
+    classDef user fill:#fff,stroke:#000,stroke-width:1px
+    classDef frontend fill:#E8F5E9,stroke:#4CAF50,color:#000,stroke-width:1px
+    classDef backend fill:#E3F2FD,stroke:#2196F3,color:#000,stroke-width:1px
+    classDef db fill:#FFFDE7,stroke:#FFEB3B,color:#000,stroke-width:1px
+    classDef gcs fill:#FCE4EC,stroke:#E91E63,color:#000,stroke-width:1px
+
+    subgraph Flow
+      A -->|Create Index| B -->|POST /indexes| C
+      C -->|Stores file list| D
+
+      A -->|List Indexes| B --> C -->|Reads indexes| D 
+      D -->|FAISS DB references| C --> E
+
+      A -->|Delete Index| B -->|DELETE /indexes/<id>| C
+      C -->|Removes index doc| D
+    end

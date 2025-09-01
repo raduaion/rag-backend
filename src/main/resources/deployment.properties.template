@@ -1,0 +1,40 @@
+# This is a template for the deployment.properties file.
+# Copy this file to deployment.properties and fill in the values for your environment.
+# The deployment.properties file should NOT be committed to version control.
+
+# The base URL of the backend application.
+baseUrl=<YOUR_BACKEND_BASE_URL>
+
+# The URL of the frontend application.
+hermes.frontend.url=<YOUR_FRONTEND_URL>
+
+# The URL of the processor service.
+hermes.processor.url=<YOUR_PROCESSOR_URL>
+
+# The ID of the default admin user.
+hermes.users.admin.id=<YOUR_ADMIN_USER_ID>
+
+# The email address to send emails from.
+hermes.email.from=<YOUR_SENDER_EMAIL>
+
+# The name of the email sender.
+hermes.email.sender.name=<YOUR_SENDER_NAME>
+
+# The redirect URI for Google OAuth2.
+spring.security.oauth2.client.registration.google.redirect-uri=<YOUR_GOOGLE_REDIRECT_URI>
+
+# Google Cloud Storage bucket name.
+gcp.bucket.name=<YOUR_GCS_BUCKET_NAME>
+
+# Google Cloud Firestore project ID.
+spring.cloud.gcp.firestore.project-id=<YOUR_FIRESTORE_PROJECT_ID>
+
+# The base URL of the authentication server.
+auth-server.url.base=<YOUR_AUTH_SERVER_URL>
+
+# The base URL of the email service.
+email-service.url.base=<YOUR_EMAIL_SERVICE_URL>
+
+# For production environments, you might want to set these for security.
+# server.servlet.session.cookie.secure=true
+# server.servlet.session.cookie.same-site=lax

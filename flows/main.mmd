@@ -1,0 +1,11 @@
+flowchart LR
+    A[NodeJS Frontend<br/><b>UI</b>]:::frontend --> B[Java Backend<br/><b>APIs & Auth</b>]:::backend
+    B --> C[Firestore<br/><b>Index refs,<br/> Conversation, etc.</b>]:::db
+    B --> D[Python Processor<br/><b>FAISS & AI</b>]:::processor
+    D --> E[GCS<br/><b>Files + Metadata<br/>status, etc.</b>]:::gcs
+
+    classDef frontend fill:#E8F5E9,stroke:#4CAF50,color:#000,stroke-width:1px
+    classDef backend fill:#E3F2FD,stroke:#2196F3,color:#000,stroke-width:1px
+    classDef db fill:#FFFDE7,stroke:#FFEB3B,color:#000,stroke-width:1px
+    classDef processor fill:#F3E5F5,stroke:#9C27B0,color:#000,stroke-width:1px
+    classDef gcs fill:#FCE4EC,stroke:#E91E63,color:#000,stroke-width:1px

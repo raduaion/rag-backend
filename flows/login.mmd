@@ -1,0 +1,13 @@
+sequenceDiagram
+    autonumber
+    participant User
+    participant NodeJS Frontend
+    participant Java Backend
+    participant GoogleOAuth as Google OAuth
+
+    User->>NodeJS Frontend: 1. Click "Login with Google"
+    NodeJS Frontend->>Java Backend: 2. Request login (OAuth)
+    Java Backend->>GoogleOAuth: 3. Redirect for OAuth
+    GoogleOAuth-->>Java Backend: 4. Return token/credentials
+    Java Backend-->>NodeJS Frontend: 5. Return user session info
+    NodeJS Frontend->>User: 6. Session established
