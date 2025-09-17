@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hermes;
+package com.hermes.data;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class HermesApp {
-
-  public static void main(String[] args) {
-    SpringApplication.run(HermesApp.class, args);
-  }
+public enum UserRole {
+  ADMIN, USER
 }

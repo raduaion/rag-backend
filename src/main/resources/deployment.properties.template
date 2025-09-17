@@ -11,8 +11,8 @@ hermes.frontend.url=<YOUR_FRONTEND_URL>
 # The URL of the processor service.
 hermes.processor.url=<YOUR_PROCESSOR_URL>
 
-# The ID of the default admin user.
-hermes.users.admin.id=<YOUR_ADMIN_USER_ID>
+# The email of the default admin user.
+hermes.users.admin.email=<YOUR_DEFAULT_ADMIN_EMAIL>
 
 # The email address to send emails from.
 hermes.email.from=<YOUR_SENDER_EMAIL>

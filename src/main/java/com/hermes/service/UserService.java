@@ -16,24 +16,27 @@
 package com.hermes.service;
 
 import com.hermes.data.ApprovalStatus;
+import com.hermes.data.UserRole;
 import com.hermes.exceptions.InvalidOperationException;
 import com.hermes.exceptions.NotFoundException;
-import com.hermes.model.UserApproval;
+import com.hermes.model.User;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface UserApprovalService {
+public interface UserService {
 
-  Flux<UserApproval> list();
+  Flux<User> list();
 
-  Mono<UserApproval> getById(String id) throws NotFoundException;
+  Mono<User> getById(String id) throws NotFoundException;
 
-  Mono<UserApproval> create(UserApproval userApproval) throws InvalidOperationException;
+  Mono<User> create(User user) throws InvalidOperationException;
 
-  Mono<UserApproval> update(String id, UserApproval userApproval) throws NotFoundException, InvalidOperationException;
+  Mono<User> update(String id, User user) throws NotFoundException, InvalidOperationException;
 
-  Mono<UserApproval> updateStatus(String id, ApprovalStatus status) throws NotFoundException, InvalidOperationException;
+  Mono<User> updateStatus(String id, ApprovalStatus status) throws NotFoundException, InvalidOperationException;
+
+  Mono<User> updateUserRole(final String id, final UserRole role) throws NotFoundException;
 
   Mono<String> delete(String id) throws NotFoundException;
 }

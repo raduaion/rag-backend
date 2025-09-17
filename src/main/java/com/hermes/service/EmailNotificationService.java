@@ -18,6 +18,7 @@ package com.hermes.service;
 import java.util.Locale;
 
 import com.hermes.data.ApprovalStatus;
+import com.hermes.data.UserRole;
 
 public interface EmailNotificationService {
   
@@ -25,4 +26,7 @@ public interface EmailNotificationService {
 
   void sendApprovalStatusNotification(final Locale locale, final String userName,
     final String email, final ApprovalStatus newStatus);
+
+  void sendUserRoleNotification(final Locale locale, final String userName,
+    final String email, final UserRole role);
 }

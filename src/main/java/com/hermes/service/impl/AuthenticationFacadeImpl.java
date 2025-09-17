@@ -15,19 +15,14 @@
  */
 package com.hermes.service.impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.hermes.exceptions.ForbiddenException;
 import com.hermes.service.AuthenticationFacade;
 
 @Service
 public class AuthenticationFacadeImpl implements AuthenticationFacade {
-
-  @Value("${hermes.users.admin.id}")
-  private String adminId;
 
   @Override
   public Authentication getAuthentication() {
@@ -40,17 +35,6 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
    */
   @Override
   public boolean isAdmin() {
-    final Authentication authentication = this.getAuthentication();
-    return (authentication != null && authentication.getName().equals(adminId));
-  }
-
-  /**
-   * Throws ForbiddenException if the current user is not Admin
-   */
-  @Override
-  public void checkAdmin() throws ForbiddenException {
-    if (!isAdmin()) {
-      throw new ForbiddenException("User not authorized");
-    }
+    return false;
   }
 }

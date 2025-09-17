@@ -15,104 +15,69 @@
  */
 package com.hermes.controller;
 
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.hermes.data.ApprovalStatus;
-import com.hermes.exceptions.NotAuthorizedException;
-import com.hermes.model.UserApproval;
-import com.hermes.repository.UserApprovalRepository;
-import com.hermes.service.AuthenticationFacade;
-import com.hermes.service.EmailNotificationService;
-import com.hermes.service.impl.Utils;
+import com.hermes.data.UserRole;
+import com.hermes.exceptions.InvalidOperationException;
+import com.hermes.exceptions.NotFoundException;
+import com.hermes.model.User;
+import com.hermes.service.UserService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/users")
-class UserController {
+public class UserController {
 
   @Autowired
-  private UserApprovalRepository userApprovalRepository;
+  private UserService userService;
 
-  @Autowired
-  private AuthenticationFacade authFacade;
-
-  @Autowired
-  private EmailNotificationService emailNotificationService;
-
-  private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
-  @GetMapping("/info")
-  public Map<String, Object> getUserInfo(final Principal principal) throws NotAuthorizedException{
-
-    if(principal != null) {
-        // System.out.println("Principal type: " + principal.getClass().getName());
-        // System.out.println("Attributes: " + ((OAuth2AuthenticationToken) principal).getPrincipal().getAttributes());
-    }
-
-    if (principal instanceof OAuth2AuthenticationToken authToken) {
-
-      final Map<String, Object> details = new HashMap<>();
-      final OAuth2User user = authToken.getPrincipal();
-
-      details.put("email", user.getAttribute("email"));
-      details.put("name", user.getAttribute("name"));
-      details.put("picture", user.getAttribute("picture"));
-      details.put("link", user.getAttribute("link"));
-
-      if (details.get("email") != null) {
-        details.put("status", getUserStatus((String) details.get("email"), (String) details.get("name")));
-        return details;
-      }
-      throw new NotAuthorizedException("Email not found in authentication token");
-    }
-
-    throw new NotAuthorizedException("User not logged in");
+  @GetMapping
+  public Flux<User> list() {
+    return userService.list();
   }
 
-  private ApprovalStatus getUserStatus(@NonNull final String email, final String username) {
+  @GetMapping("/{id}")
+  public Mono<User> getById(@PathVariable final String id) throws NotFoundException {
+    return userService.getById(id);
+  }
 
-    if (authFacade.isAdmin()) {
-      return ApprovalStatus.APPROVED;
-    }
+  @PostMapping
+  public Mono<User> create(@RequestBody final User user) throws InvalidOperationException {
+    return userService.create(user);
+  }
 
-    try {
+  @PutMapping("/{id}")
+  public Mono<User> update(@PathVariable final String id, @RequestBody final User user)
+  throws NotFoundException, InvalidOperationException {
+    return userService.update(id, user);
+  }
 
-      UserApproval userApproval = userApprovalRepository.findByEmail(email).block();
-      if (userApproval == null) {
+  @PostMapping("/{id}/updatestatus")
+  public Mono<User> updateStatus(@PathVariable final String id, @RequestParam final ApprovalStatus status)
+  throws NotFoundException, InvalidOperationException {
+    return userService.updateStatus(id, status);
+  }
 
-        userApproval = new UserApproval()
-          .setEmail(email)
-          .setStatus(ApprovalStatus.PENDING)
-          .setComment("I am trying to log in")
-          .setCreatedOn(Utils.getTimestamp());
+  @PostMapping("/{id}/updaterole")
+  public Mono<User> updateUserRole(@PathVariable final String id, @RequestParam final UserRole role)
+  throws NotFoundException {
+    return userService.updateUserRole(id, role);
+  }
 
-        final Mono<UserApproval> result = userApprovalRepository
-          .save(userApproval)
-          .doOnNext(user -> emailNotificationService.sendCreationNotification(Locale.ENGLISH, username, email));
-
-        result.subscribe(
-          response -> log.info("UserApprovalRepository Response: {}", response),
-          error -> log.error("UserApprovalRepository Error: {}", error.getMessage())
-        );
-      }
-
-      return userApproval.getStatus();
-    }
-    catch (Exception e) {
-      log.error("getUserStatus: {}", e.getMessage());
-      return ApprovalStatus.PENDING;
-    }
+  @DeleteMapping("/{id}")
+  public Mono<String> delete(@PathVariable final String id) throws NotFoundException {
+    return userService.delete(id);
   }
 }

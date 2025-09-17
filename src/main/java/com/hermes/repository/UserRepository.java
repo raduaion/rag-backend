@@ -16,10 +16,15 @@
 package com.hermes.repository;
 
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
-import com.hermes.model.UserApproval;
+import com.hermes.data.UserRole;
+import com.hermes.model.User;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface UserApprovalRepository extends FirestoreReactiveRepository<UserApproval> {
-  Mono<UserApproval> findByEmail(final String email);
+public interface UserRepository extends FirestoreReactiveRepository<User> {
+
+  Mono<User> findByEmail(final String email);
+
+  Flux<User> findByRole(final UserRole role);
 }

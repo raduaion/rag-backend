@@ -24,20 +24,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig {
 
-    @Value("${hermes.frontend.url}")
-    private String frontendUrl;
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins(frontendUrl) // Frontend URL
-                        // .allowedOriginPatterns(frontendUrl)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
-    }
+  @Value("${hermes.frontend.url}")
+  private String frontendUrl;
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+          .allowedOrigins(frontendUrl) // Frontend URL
+          // .allowedOriginPatterns(frontendUrl)
+          .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+          .allowedHeaders("*")
+          .allowCredentials(true);
+      }
+    };
+  }
 }

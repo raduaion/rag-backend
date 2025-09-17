@@ -20,6 +20,7 @@ import org.springframework.data.annotation.CreatedDate;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
 import com.hermes.data.ApprovalStatus;
+import com.hermes.data.UserRole;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -27,16 +28,28 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Document(collectionName = "userapproval")
-public class UserApproval {
+public class User {
 
   @DocumentId
   private String id;
+
+  private String authId;
 
   private String email;
 
   private ApprovalStatus status;
 
+  private UserRole role;
+
   private String comment;
+
+  private String fullName;
+
+  private String link;
+
+  private String picture;
+
+  private String provider;
 
   @CreatedDate
   private long createdOn;

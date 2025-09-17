@@ -139,7 +139,6 @@ public class Helpers {
       });
   }
 
-
   /**
    * Send email to Email-Service
    */

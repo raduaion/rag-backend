@@ -17,13 +17,9 @@ package com.hermes.service;
 
 import org.springframework.security.core.Authentication;
 
-import com.hermes.exceptions.ForbiddenException;
-
 public interface AuthenticationFacade {
   
   Authentication getAuthentication();
 
   boolean isAdmin();
-
-  void checkAdmin() throws ForbiddenException;
 }

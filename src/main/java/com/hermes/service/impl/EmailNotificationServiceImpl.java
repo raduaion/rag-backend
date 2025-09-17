@@ -25,6 +25,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.hermes.data.ApprovalStatus;
+import com.hermes.data.UserRole;
 import com.hermes.service.EmailNotificationService;
 
 import jakarta.annotation.Nullable;
@@ -57,6 +58,9 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
 
   public static final String NOTIFICATION_USER_REJECTED_SUBJECT = "email.notification.user.rejected.subject";
   public static final String NOTIFICATION_USER_REJECTED_BODY = "email.notification.user.rejected.body";
+
+  public static final String NOTIFICATION_USER_ROLE_SUBJECT = "email.notification.user.role.subject";
+  public static final String NOTIFICATION_USER_ROLE_BODY = "email.notification.user.role.body";
 
   @Override
   public void sendCreationNotification(final Locale locale, final String userName, final String email) {
@@ -91,6 +95,32 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     );
   }
 
+  @Override
+  public void sendUserRoleNotification(final Locale locale, final String userName,
+  final String email, final UserRole role) {
+
+    this.doSendMessage(
+      emailFrom,
+      List.of(email),
+      locale,
+      NOTIFICATION_USER_ROLE_SUBJECT,
+      null,
+      NOTIFICATION_USER_ROLE_BODY,
+      new Object[] { userName, role.toString(), emailFrom, frontendUrl }
+    );
+  }
+
+  /**
+   * Asynchronously send emails
+   * 
+   * @param from
+   * @param to
+   * @param locale
+   * @param subjectPattern
+   * @param subjectArgs
+   * @param bodyPattern
+   * @param bodyArgs
+   */
   private void doSendMessage(final String from, @NonNull final List<String> to, final Locale locale,
   final String subjectPattern, @Nullable Object[] subjectArgs, final String bodyPattern,
   @Nullable Object[] bodyArgs) {
